@@ -1,0 +1,36 @@
+{
+	"name": "hms-schemas",
+	"version": "0.0.1",
+	"description": "Zod schemas for different repos",
+	"main": "dist/index.js",
+	"type": "module",
+	"scripts": {
+		"preinstall": "npx only-allow pnpm",
+		"build": "tsc",
+		"start": "node dist/index.js",
+		"dev": "tsx watch src/index.ts",
+		"dev:node": "node --enable-source-maps --watch dist/index.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/HMS-KK/schemas.git"
+	},
+	"keywords": [
+		"zod",
+		"schema"
+	],
+	"author": "Mobin Askari",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/HMS-KK/schemas/issues"
+	},
+	"homepage": "https://github.com/HMS-KK/schemas#readme",
+	"devDependencies": {
+		"@types/node": "^20.14.9",
+		"tsx": "^4.16.2",
+		"typescript": "^5.5.3"
+	},
+	"dependencies": {
+		"zod": "^3.23.8"
+	}
+}
