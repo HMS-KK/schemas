@@ -2,11 +2,15 @@
 	"name": "hms-schemas",
 	"version": "0.0.1",
 	"description": "Zod schemas for different repos",
+	"types": "dist/index.d.ts",
 	"main": "dist/index.js",
 	"type": "module",
 	"scripts": {
 		"preinstall": "npx only-allow pnpm",
-		"build": "tsc",
+		"test": "vitest run",
+		"test:dev": "vitest watch",
+		"coverage": "vitest run --coverage",
+		"build": "vitest run && tsc -p tsconfig.build.json",
 		"start": "node dist/index.js",
 		"dev": "tsx watch src/index.ts",
 		"dev:node": "node --enable-source-maps --watch dist/index.js"
@@ -27,8 +31,10 @@
 	"homepage": "https://github.com/HMS-KK/schemas#readme",
 	"devDependencies": {
 		"@types/node": "^20.14.9",
+		"@vitest/coverage-v8": "^1.6.0",
 		"tsx": "^4.16.2",
-		"typescript": "^5.5.3"
+		"typescript": "^5.5.3",
+		"vitest": "^1.6.0"
 	},
 	"dependencies": {
 		"zod": "^3.23.8"
