@@ -13,16 +13,15 @@ export const videoSchema = z
 	})
 	.strict()
 
-export type VideoSchema = z.infer<typeof videoSchema>
-export type CreateVideoDto = VideoSchema
-
 const videoWithIDSchema = videoSchema.merge(
 	z.object({ id: z.number() })
 )
 
+export const partialVideoSchema = videoSchema.partial()
+
 export type Video = z.infer<typeof videoWithIDSchema>
 
-export const partialVideoSchema = videoSchema.partial()
+export type CreateVideoDto = z.infer<typeof videoSchema>
 
 export type UpdateVideoDto = z.infer<
 	typeof partialVideoSchema
