@@ -1,12 +1,13 @@
 import { describe, expect, it } from "vitest"
 import {
 	videoSchema,
-	type VideoSchema
+	type CreateVideoDto,
+	type UpdateVideoDto
 } from "../src/videos.js"
 
 describe("videoSchema", () => {
 	it("should parse correctly", () => {
-		const data: VideoSchema = {
+		const data: CreateVideoDto = {
 			name: "hello",
 			original_video_url: "http://t.me",
 			bucket_leaked_video_id: 1,
@@ -23,7 +24,7 @@ describe("videoSchema", () => {
 	})
 
 	it("should throw if the provided data is invalid", () => {
-		const data: VideoSchema = {
+		const data: UpdateVideoDto = {
 			name: "hello",
 			original_video_url: "http://"
 		}

@@ -1,5 +1,5 @@
 {
-	"name": "hms-schemas",
+	"name": "@hms/schemas",
 	"version": "0.1.0",
 	"description": "Zod schemas for different repos",
 	"types": "dist/index.d.ts",
