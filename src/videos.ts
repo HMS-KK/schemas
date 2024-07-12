@@ -3,7 +3,7 @@ import { z } from "zod"
 export const videoSchema = z
 	.object({
 		name: z.string().trim().min(1),
-		original_video_url: z.string().url().trim(),
+		original_video_url: z.string().url().trim().optional(),
 		markdown_description: z.string().optional(),
 		is_leaked: z.boolean().default(false).optional(),
 		bucket_thumbnail_id: z.number().optional(),
@@ -17,7 +17,9 @@ const videoWithIDSchema = videoSchema.merge(
 	z.object({ id: z.number() })
 )
 
-export const partialVideoSchema = videoSchema.partial()
+export const partialVideoSchema = videoSchema
+	.partial()
+	.strict()
 
 export type Video = z.infer<typeof videoWithIDSchema>
 
