@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
 import {
+	partialVideoSchema,
 	videoSchema,
 	type CreateVideoDto,
 	type UpdateVideoDto
@@ -30,5 +31,21 @@ describe("videoSchema", () => {
 		}
 
 		expect(() => videoSchema.parse(data)).toThrowError()
+	})
+
+	describe("partial video schema", () => {
+		it("should parse correctly", () => {
+			const data = { bucket_leaked_video_id: 1 }
+
+			const result = partialVideoSchema.safeParse(data)
+
+			expect(result.success).toEqual(true)
+		})
+
+		it("should error on unknown fields", () => {
+			const data = { a: 1 }
+
+			expect(() => partialVideoSchema.parse(data)).toThrow()
+		})
 	})
 })
