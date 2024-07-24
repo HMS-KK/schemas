@@ -23,13 +23,7 @@
 		"sourceMap": true,
 		"declaration": true,
 
-		"lib": ["es2022"],
-
-		/* Path Aliases */
-		"baseUrl": ".",
-		"paths": {
-			"@/*": ["src/*"]
-		}
+		"lib": ["es2022"]
 	},
 	"exclude": ["node_modules"],
 	"include": ["src", "tests"]
