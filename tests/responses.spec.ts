@@ -3,7 +3,7 @@ import {
 	errorResponseSchema,
 	successResponseSchema,
 	apiResponseSchema
-} from "../src/responses.js"
+} from "../src/shared/responses.js"
 import { z } from "zod"
 
 describe("responses", () => {
