@@ -15,6 +15,17 @@ export const torrentSchema = z
 
 export type TorrentSchema = z.infer<typeof torrentSchema>
 
+export const torrentsMainRouteRequestBodySchema = z
+	.object({
+		skip: z.number().optional(),
+		take: z.number().optional()
+	})
+	.strict()
+
+export type TorrentsMainRouteRequestBodySchema = z.infer<
+	typeof torrentsMainRouteRequestBodySchema
+>
+
 export const torrentsMainRouteResponseSchema =
 	apiResponseSchema(z.array(torrentSchema))
 
