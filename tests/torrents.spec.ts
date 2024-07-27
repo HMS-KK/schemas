@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
 import {
+	torrentDeleteRouteRequestPathParamsSchema,
 	torrentDeleteRouteResponseSchema,
 	torrentGetRouteResponseSchema,
 	torrentSchema,
@@ -7,6 +8,7 @@ import {
 	torrentUploadRouteResponseSchema,
 	torrentsMainRouteRequestBodySchema,
 	torrentsMainRouteResponseSchema,
+	type TorrentDeleteRouteRequestPathParamsSchema,
 	type TorrentDeleteRouteResponseSchema,
 	type TorrentGetRouteResponseSchema,
 	type TorrentSchema,
@@ -119,6 +121,41 @@ describe("torrents", () => {
 			it("should throw if the data is lacking mandatory fields", () => {
 				expect(() =>
 					torrentUploadRouteRequestQueryParamsSchema.parse({
+						a: 1
+					})
+				).toThrow()
+			})
+		})
+
+		describe("torrentDeleteRouteRequestPathParamsSchema", () => {
+			it("should parse the data correctly and not throw", () => {
+				const data: TorrentDeleteRouteRequestPathParamsSchema =
+					{
+						id: 1
+					}
+
+				expect(
+					torrentDeleteRouteRequestPathParamsSchema.parse(
+						data
+					)
+				).toStrictEqual(data)
+			})
+
+			it("should throw if the shape is correct but the data shape is not", () => {
+				const data = {
+					id: {}
+				}
+
+				expect(() =>
+					torrentDeleteRouteRequestPathParamsSchema.parse(
+						data
+					)
+				).toThrow()
+			})
+
+			it("should throw if the data is lacking mandatory fields", () => {
+				expect(() =>
+					torrentDeleteRouteRequestPathParamsSchema.parse({
 						a: 1
 					})
 				).toThrow()

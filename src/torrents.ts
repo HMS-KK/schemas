@@ -69,6 +69,22 @@ export type TorrentGetRouteResponseSchema = z.infer<
 	typeof torrentGetRouteResponseSchema
 >
 
+/**
+ * only validates the search params, and thus,
+ * should only be used when specifying/validating search params
+ */
+export const torrentDeleteRouteRequestPathParamsSchema =
+	z.object({
+		id: z.coerce.number().min(1)
+	})
+
+/**
+ * this type is only valid for search params, and thus,
+ * should only be used when specifying the request search params
+ */
+export type TorrentDeleteRouteRequestPathParamsSchema =
+	z.infer<typeof torrentDeleteRouteRequestPathParamsSchema>
+
 export const torrentDeleteRouteResponseSchema =
 	apiResponseSchema(torrentSchema)
 
