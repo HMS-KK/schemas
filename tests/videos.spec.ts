@@ -5,6 +5,7 @@ import {
 	videoGetRouteRequestPathParamsSchema,
 	videoGetRouteResponseSchema,
 	videoSchema,
+	videoUploadRouteRequestQueryParamsSchema,
 	videoUploadRouteResponseSchema,
 	videosMainRouteResponseSchema,
 	type VideoDeleteRouteRequestPathParamsSchema,
@@ -12,6 +13,7 @@ import {
 	type VideoGetRouteRequestPathParamsSchema,
 	type VideoGetRouteResponseSchema,
 	type VideoSchema,
+	type VideoUploadRouteRequestSchema,
 	type VideoUploadRouteResponseSchema,
 	type VideosMainRouteResponseSchema
 } from "../src/videos.js"
@@ -114,6 +116,28 @@ describe("videos", () => {
 			it("should throw if the data is lacking mandatory fields", () => {
 				expect(() =>
 					videoDeleteRouteRequestPathParamsSchema.parse({
+						a: 1
+					})
+				).toThrow()
+			})
+		})
+
+		describe("videoUploadRouteRequestQueryParamsSchema", () => {
+			it("should parse the data correctly and not throw", () => {
+				const data: VideoUploadRouteRequestSchema = {
+					reference_video_id: 1
+				}
+
+				expect(
+					videoUploadRouteRequestQueryParamsSchema.parse(
+						data
+					)
+				).toStrictEqual(data)
+			})
+
+			it("should throw if the data is lacking mandatory fields", () => {
+				expect(() =>
+					videoUploadRouteRequestQueryParamsSchema.parse({
 						a: 1
 					})
 				).toThrow()

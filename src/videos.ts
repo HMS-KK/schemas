@@ -22,6 +22,23 @@ export type VideosMainRouteResponseSchema = z.infer<
 	typeof videosMainRouteResponseSchema
 >
 
+/**
+ * only validates the search params, and thus,
+ * should only be used when specifying/validating search params
+ */
+export const videoUploadRouteRequestQueryParamsSchema =
+	z.object({
+		reference_video_id: z.coerce.number().min(1)
+	})
+
+/**
+ * this type is only valid for search params, and thus,
+ * should only be used when specifying the request search params
+ */
+export type VideoUploadRouteRequestSchema = z.infer<
+	typeof videoUploadRouteRequestQueryParamsSchema
+>
+
 export const videoUploadRouteResponseSchema =
 	apiResponseSchema(
 		z.object({
