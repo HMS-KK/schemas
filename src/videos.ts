@@ -15,6 +15,17 @@ export const videoSchema = z
 
 export type VideoSchema = z.infer<typeof videoSchema>
 
+export const videosMainRouteRequestBodySchema = z
+	.object({
+		skip: z.number().optional(),
+		take: z.number().optional()
+	})
+	.strict()
+
+export type VideosMainRouteRequestBodySchema = z.infer<
+	typeof videosMainRouteRequestBodySchema
+>
+
 export const videosMainRouteResponseSchema =
 	apiResponseSchema(z.array(videoSchema))
 

@@ -7,6 +7,7 @@ import {
 	videoSchema,
 	videoUploadRouteRequestQueryParamsSchema,
 	videoUploadRouteResponseSchema,
+	videosMainRouteRequestBodySchema,
 	videosMainRouteResponseSchema,
 	type VideoDeleteRouteRequestPathParamsSchema,
 	type VideoDeleteRouteResponseSchema,
@@ -15,6 +16,7 @@ import {
 	type VideoSchema,
 	type VideoUploadRouteRequestSchema,
 	type VideoUploadRouteResponseSchema,
+	type VideosMainRouteRequestBodySchema,
 	type VideosMainRouteResponseSchema
 } from "../src/videos.js"
 
@@ -57,6 +59,54 @@ describe("videos", () => {
 	})
 
 	describe("Requests", () => {
+		describe("videosMainRouteRequestBodySchema", () => {
+			it("should parse the data correctly and not throw", () => {
+				const data1: VideosMainRouteRequestBodySchema = {
+					skip: 1,
+					take: 1
+				}
+
+				const data2: VideosMainRouteRequestBodySchema = {
+					take: undefined,
+					skip: undefined
+				}
+
+				expect(
+					videosMainRouteRequestBodySchema.parse(data1)
+				).toStrictEqual(data1)
+				expect(
+					videosMainRouteRequestBodySchema.parse(data2)
+				).toStrictEqual(data2)
+			})
+
+			it("should throw if the data is lacking mandatory fields", () => {
+				expect(() =>
+					videosMainRouteRequestBodySchema.parse({ a: 1 })
+				).toThrow()
+			})
+
+			it("should throw if the data contains mandatory fields but has an extra property", () => {
+				const data1 = {
+					skip: 1,
+					take: 1,
+					a: 1
+				}
+
+				const data2 = {
+					take: undefined,
+					skip: undefined,
+					b: 1
+				}
+
+				expect(() =>
+					videosMainRouteRequestBodySchema.parse(data1)
+				).toThrow()
+				expect(() =>
+					videosMainRouteRequestBodySchema.parse(data2)
+				).toThrow()
+			})
+		})
+
 		describe("videoGetRouteRequestPathParamsSchema", () => {
 			it("should parse the data correctly and not throw", () => {
 				const data: VideoGetRouteRequestPathParamsSchema = {
