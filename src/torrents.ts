@@ -33,6 +33,23 @@ export type TorrentsMainRouteResponseSchema = z.infer<
 	typeof torrentsMainRouteResponseSchema
 >
 
+/**
+ * only validates the search params, and thus,
+ * should only be used when specifying/validating search params
+ */
+export const torrentUploadRouteRequestQueryParamsSchema =
+	z.object({
+		reference_pack_id: z.coerce.number().min(1)
+	})
+
+/**
+ * this type is only valid for search params, and thus,
+ * should only be used when specifying the request search params
+ */
+export type TorrentUploadRouteRequestSchema = z.infer<
+	typeof torrentUploadRouteRequestQueryParamsSchema
+>
+
 export const torrentUploadRouteResponseSchema =
 	apiResponseSchema(
 		z.object({

@@ -3,12 +3,14 @@ import {
 	torrentDeleteRouteResponseSchema,
 	torrentGetRouteResponseSchema,
 	torrentSchema,
+	torrentUploadRouteRequestQueryParamsSchema,
 	torrentUploadRouteResponseSchema,
 	torrentsMainRouteRequestBodySchema,
 	torrentsMainRouteResponseSchema,
 	type TorrentDeleteRouteResponseSchema,
 	type TorrentGetRouteResponseSchema,
 	type TorrentSchema,
+	type TorrentUploadRouteRequestSchema,
 	type TorrentUploadRouteResponseSchema,
 	type TorrentsMainRouteRequestBodySchema,
 	type TorrentsMainRouteResponseSchema
@@ -97,6 +99,28 @@ describe("torrents", () => {
 				).toThrow()
 				expect(() =>
 					torrentsMainRouteRequestBodySchema.parse(data2)
+				).toThrow()
+			})
+		})
+
+		describe("torrentUploadRouteRequestQueryParamsSchema", () => {
+			it("should parse the data correctly and not throw", () => {
+				const data: TorrentUploadRouteRequestSchema = {
+					reference_pack_id: 1
+				}
+
+				expect(
+					torrentUploadRouteRequestQueryParamsSchema.parse(
+						data
+					)
+				).toStrictEqual(data)
+			})
+
+			it("should throw if the data is lacking mandatory fields", () => {
+				expect(() =>
+					torrentUploadRouteRequestQueryParamsSchema.parse({
+						a: 1
+					})
 				).toThrow()
 			})
 		})
