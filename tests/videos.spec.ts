@@ -2,12 +2,14 @@ import { describe, expect, it } from "vitest"
 import {
 	videoDeleteRouteRequestPathParamsSchema,
 	videoDeleteRouteResponseSchema,
+	videoGetRouteRequestPathParamsSchema,
 	videoGetRouteResponseSchema,
 	videoSchema,
 	videoUploadRouteResponseSchema,
 	videosMainRouteResponseSchema,
 	type VideoDeleteRouteRequestPathParamsSchema,
 	type VideoDeleteRouteResponseSchema,
+	type VideoGetRouteRequestPathParamsSchema,
 	type VideoGetRouteResponseSchema,
 	type VideoSchema,
 	type VideoUploadRouteResponseSchema,
@@ -53,6 +55,36 @@ describe("videos", () => {
 	})
 
 	describe("Requests", () => {
+		describe("videoGetRouteRequestPathParamsSchema", () => {
+			it("should parse the data correctly and not throw", () => {
+				const data: VideoGetRouteRequestPathParamsSchema = {
+					id: 1
+				}
+
+				expect(
+					videoGetRouteRequestPathParamsSchema.parse(data)
+				).toStrictEqual(data)
+			})
+
+			it("should throw if the shape is correct but the data shape is not", () => {
+				const data = {
+					id: {}
+				}
+
+				expect(() =>
+					videoGetRouteRequestPathParamsSchema.parse(data)
+				).toThrow()
+			})
+
+			it("should throw if the data is lacking mandatory fields", () => {
+				expect(() =>
+					videoGetRouteRequestPathParamsSchema.parse({
+						a: 1
+					})
+				).toThrow()
+			})
+		})
+
 		describe("videoDeleteRouteRequestPathParamsSchema", () => {
 			it("should parse the data correctly and not throw", () => {
 				const data: VideoDeleteRouteRequestPathParamsSchema =

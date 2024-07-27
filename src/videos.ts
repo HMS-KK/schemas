@@ -34,6 +34,23 @@ export type VideoUploadRouteResponseSchema = z.infer<
 	typeof videoUploadRouteResponseSchema
 >
 
+/**
+ * only validates the path params, and thus,
+ * should only be used when specifying/validating path params
+ */
+export const videoGetRouteRequestPathParamsSchema =
+	z.object({
+		id: z.coerce.number().min(1)
+	})
+
+/**
+ * this type is only valid for path params, and thus,
+ * should only be used when specifying the request path params
+ */
+export type VideoGetRouteRequestPathParamsSchema = z.infer<
+	typeof videoGetRouteRequestPathParamsSchema
+>
+
 export const videoGetRouteResponseSchema =
 	apiResponseSchema(videoSchema)
 
