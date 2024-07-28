@@ -1,29 +1,11 @@
 import { describe, expect, it } from "vitest"
-import {
-	videoDeleteRouteRequestPathParamsSchema,
-	videoDeleteRouteResponseSchema,
-	videoGetRouteRequestPathParamsSchema,
-	videoGetRouteResponseSchema,
-	videoSchema,
-	videoUploadRouteRequestQueryParamsSchema,
-	videoUploadRouteResponseSchema,
-	videosMainRouteRequestBodySchema,
-	videosMainRouteResponseSchema,
-	type VideoDeleteRouteRequestPathParamsSchema,
-	type VideoDeleteRouteResponseSchema,
-	type VideoGetRouteRequestPathParamsSchema,
-	type VideoGetRouteResponseSchema,
-	type VideoSchema,
-	type VideoUploadRouteRequestSchema,
-	type VideoUploadRouteResponseSchema,
-	type VideosMainRouteRequestBodySchema,
-	type VideosMainRouteResponseSchema
-} from "../src/videos.js"
+import { bucketUploadedVideosSchemas } from "../src/videos.js"
 
-describe("videos", () => {
-	describe("videoSchema", () => {
+describe("bucketUploadedVideosSchemas", () => {
+	describe("video", () => {
+		const schema = bucketUploadedVideosSchemas.video
 		it("should parse the data correctly and not throw", () => {
-			const expected: VideoSchema = {
+			const expected = {
 				id: 1,
 				name: "Hello",
 				reference_video_id: 1,
@@ -32,20 +14,18 @@ describe("videos", () => {
 				updatedAt: "2024-07-24T10:49:01.854Z"
 			}
 
-			const result = videoSchema.parse(expected)
+			const result = schema.parse(expected)
 
 			expect(result).toStrictEqual(expected)
 		})
 
 		it("should throw if the data is lacking mandatory fields", () => {
-			expect(() =>
-				videoSchema.parse({ badReq: "" })
-			).toThrow()
+			expect(() => schema.parse({ badReq: "" })).toThrow()
 		})
 
 		it("should throw if the data contains mandatory fields but has an extra property", () => {
 			expect(() =>
-				videoSchema.parse({
+				schema.parse({
 					id: 1,
 					name: "Hello",
 					reference_video_id: 1,
@@ -58,367 +38,412 @@ describe("videos", () => {
 		})
 	})
 
-	describe("Requests", () => {
-		describe("videosMainRouteRequestBodySchema", () => {
-			it("should parse the data correctly and not throw", () => {
-				const data1: VideosMainRouteRequestBodySchema = {
-					skip: 1,
-					take: 1
-				}
+	describe("routes", () => {
+		const routesSchemas = bucketUploadedVideosSchemas.routes
 
-				const data2: VideosMainRouteRequestBodySchema = {
-					take: undefined,
-					skip: undefined
-				}
+		describe("/", () => {
+			const mainRouteSchema = routesSchemas["/"]
 
-				expect(
-					videosMainRouteRequestBodySchema.parse(data1)
-				).toStrictEqual(data1)
-				expect(
-					videosMainRouteRequestBodySchema.parse(data2)
-				).toStrictEqual(data2)
-			})
+			describe("searchParams", () => {
+				const searchParamsSchema =
+					mainRouteSchema.searchParams
+				it("should parse the data correctly and not throw", () => {
+					const data1 = {
+						skip: 1,
+						take: 1
+					}
 
-			it("should throw if the data is lacking mandatory fields", () => {
-				expect(() =>
-					videosMainRouteRequestBodySchema.parse({ a: 1 })
-				).toThrow()
-			})
+					const data2 = {
+						take: undefined,
+						skip: undefined
+					}
 
-			it("should throw if the data contains mandatory fields but has an extra property", () => {
-				const data1 = {
-					skip: 1,
-					take: 1,
-					a: 1
-				}
+					expect(
+						searchParamsSchema.parse(data1)
+					).toStrictEqual(data1)
+					expect(
+						searchParamsSchema.parse(data2)
+					).toStrictEqual(data2)
+				})
 
-				const data2 = {
-					take: undefined,
-					skip: undefined,
-					b: 1
-				}
+				it("should throw if the data is lacking mandatory fields", () => {
+					expect(() =>
+						searchParamsSchema.parse({ a: 1 })
+					).toThrow()
+				})
 
-				expect(() =>
-					videosMainRouteRequestBodySchema.parse(data1)
-				).toThrow()
-				expect(() =>
-					videosMainRouteRequestBodySchema.parse(data2)
-				).toThrow()
-			})
-		})
-
-		describe("videoGetRouteRequestPathParamsSchema", () => {
-			it("should parse the data correctly and not throw", () => {
-				const data: VideoGetRouteRequestPathParamsSchema = {
-					id: 1
-				}
-
-				expect(
-					videoGetRouteRequestPathParamsSchema.parse(data)
-				).toStrictEqual(data)
-			})
-
-			it("should throw if the shape is correct but the data shape is not", () => {
-				const data = {
-					id: {}
-				}
-
-				expect(() =>
-					videoGetRouteRequestPathParamsSchema.parse(data)
-				).toThrow()
-			})
-
-			it("should throw if the data is lacking mandatory fields", () => {
-				expect(() =>
-					videoGetRouteRequestPathParamsSchema.parse({
+				it("should throw if the data contains mandatory fields but has an extra property", () => {
+					const data1 = {
+						skip: 1,
+						take: 1,
 						a: 1
-					})
-				).toThrow()
+					}
+
+					const data2 = {
+						take: undefined,
+						skip: undefined,
+						b: 1
+					}
+
+					expect(() =>
+						searchParamsSchema.parse(data1)
+					).toThrow()
+					expect(() =>
+						searchParamsSchema.parse(data2)
+					).toThrow()
+				})
+			})
+
+			describe("response", () => {
+				const responseSchema = mainRouteSchema.response
+
+				it("should parse the data correctly and not throw", () => {
+					const data1 = {
+						ok: true,
+						data: [
+							{
+								id: 1,
+								name: "Hello",
+								reference_video_id: 0,
+								url: "http://github.com",
+								createdAt: "2024-07-24T10:49:01.854Z",
+								updatedAt: "2024-07-24T10:49:01.854Z"
+							}
+						]
+					}
+
+					const data2 = {
+						ok: false,
+						error:
+							"There was an error while processing your request"
+					}
+
+					expect(responseSchema.parse(data1)).toStrictEqual(
+						data1
+					)
+					expect(responseSchema.parse(data2)).toStrictEqual(
+						data2
+					)
+				})
+
+				it("should throw if the data is lacking mandatory fields", () => {
+					expect(() =>
+						responseSchema.parse({ a: 1 })
+					).toThrow()
+				})
+
+				it("should throw if the data contains mandatory fields but has an extra property", () => {
+					const data1 = {
+						ok: true,
+						data: [
+							{
+								id: 1,
+								name: "Hello",
+								reference_video_id: 0,
+								url: "http://github.com",
+								createdAt: "2024-07-24T10:49:01.854Z",
+								updatedAt: "2024-07-24T10:49:01.854Z",
+								a: 1
+							}
+						]
+					}
+
+					const data2 = {
+						ok: false,
+						error:
+							"There was an error while processing your request",
+						a: 1
+					}
+
+					expect(() =>
+						responseSchema.parse(data1)
+					).toThrow()
+					expect(() =>
+						responseSchema.parse(data2)
+					).toThrow()
+				})
 			})
 		})
 
-		describe("videoDeleteRouteRequestPathParamsSchema", () => {
-			it("should parse the data correctly and not throw", () => {
-				const data: VideoDeleteRouteRequestPathParamsSchema =
-					{
+		describe("/upload", () => {
+			const uploadSchema = routesSchemas["/upload"]
+
+			describe("searchParams", () => {
+				const searchParamsSchema = uploadSchema.searchParams
+				it("should parse the data correctly and not throw", () => {
+					const data = {
+						reference_video_id: 1
+					}
+
+					expect(
+						searchParamsSchema.parse(data)
+					).toStrictEqual(data)
+				})
+
+				it("should throw if the data is lacking mandatory fields", () => {
+					expect(() =>
+						searchParamsSchema.parse({
+							a: 1
+						})
+					).toThrow()
+				})
+			})
+
+			describe("response", () => {
+				const responseSchema = uploadSchema.response
+
+				it("should parse the data correctly and not throw", () => {
+					const data1 = {
+						ok: true,
+						data: {
+							db: {
+								id: 29,
+								name: "1721821659094_-_video.t3071019.video",
+								reference_video_id: 2,
+								createdAt: "2024-07-24T11:47:39.097Z",
+								updatedAt: "2024-07-24T11:47:39.097Z",
+								url: "http://127.0.0.1:8080/files/videos/1721821659094_-_video.t3071019.video"
+							},
+							originalFileData: {
+								fieldname: "video",
+								originalname: "video.t3071019.video",
+								encoding: "7bit",
+								mimetype: "application/x-bitvideo",
+								destination: "./files/videos",
+								filename:
+									"1721821659094_-_video.t3071019.video",
+								path: "files\\videos\\1721821659094_-_video.t3071019.video",
+								size: 166164
+							}
+						}
+					}
+
+					const data2 = {
+						ok: false,
+						error:
+							"There was an error while processing your request"
+					}
+
+					expect(responseSchema.parse(data1)).toStrictEqual(
+						data1
+					)
+					expect(responseSchema.parse(data2)).toStrictEqual(
+						data2
+					)
+				})
+
+				it("should throw if the data is lacking mandatory fields", () => {
+					expect(() =>
+						responseSchema.parse({ a: 1 })
+					).toThrow()
+				})
+
+				it("should throw if the data contains mandatory fields but has an extra property", () => {
+					const data1 = {
+						ok: true,
+						data: {
+							db: {
+								id: 29,
+								name: "1721821659094_-_video.t3071019.video",
+								reference_video_id: 2,
+								createdAt: "2024-07-24T11:47:39.097Z",
+								updatedAt: "2024-07-24T11:47:39.097Z",
+								url: "http://127.0.0.1:8080/files/videos/1721821659094_-_video.t3071019.video",
+								a: ""
+							},
+							originalFileData: {
+								fieldname: "video",
+								originalname: "video.t3071019.video",
+								encoding: "7bit",
+								mimetype: "application/x-bitvideo",
+								destination: "./files/videos",
+								filename:
+									"1721821659094_-_video.t3071019.video",
+								path: "files\\videos\\1721821659094_-_video.t3071019.video",
+								size: 166164
+							}
+						}
+					}
+
+					const data2 = {
+						ok: true,
+						data: {
+							db: {
+								id: 29,
+								name: "1721821659094_-_video.t3071019.video",
+								reference_video_id: 2,
+								createdAt: "2024-07-24T11:47:39.097Z",
+								updatedAt: "2024-07-24T11:47:39.097Z",
+								url: "http://127.0.0.1:8080/files/videos/1721821659094_-_video.t3071019.video"
+							},
+							originalFileData: {
+								fieldname: "video",
+								originalname: "video.t3071019.video",
+								encoding: "7bit",
+								mimetype: "application/x-bitvideo",
+								destination: "./files/videos",
+								filename:
+									"1721821659094_-_video.t3071019.video",
+								path: "files\\videos\\1721821659094_-_video.t3071019.video",
+								size: 166164,
+								a: ""
+							}
+						}
+					}
+
+					const data3 = {
+						ok: false,
+						error:
+							"There was an error while processing your request",
+						a: 1
+					}
+
+					expect(() =>
+						responseSchema.parse(data1)
+					).toThrow()
+					expect(() =>
+						responseSchema.parse(data2)
+					).toThrow()
+					expect(() =>
+						responseSchema.parse(data3)
+					).toThrow()
+				})
+			})
+		})
+
+		describe("/get/:id", () => {
+			const getIDRouteSchema = routesSchemas["/get/:id"]
+
+			describe("pathParams", () => {
+				const pathParamsSchema = getIDRouteSchema.pathParams
+
+				it("should parse the data correctly and not throw", () => {
+					const data = {
 						id: 1
 					}
 
-				expect(
-					videoDeleteRouteRequestPathParamsSchema.parse(
-						data
-					)
-				).toStrictEqual(data)
+					expect(
+						pathParamsSchema.parse(data)
+					).toStrictEqual(data)
+				})
+
+				it("should throw if the shape is correct but the data shape is not", () => {
+					const data = {
+						id: {}
+					}
+
+					expect(() =>
+						pathParamsSchema.parse(data)
+					).toThrow()
+				})
+
+				it("should throw if the data is lacking mandatory fields", () => {
+					expect(() =>
+						pathParamsSchema.parse({
+							a: 1
+						})
+					).toThrow()
+				})
 			})
 
-			it("should throw if the shape is correct but the data shape is not", () => {
-				const data = {
-					id: {}
-				}
+			describe("response", () => {
+				const responseSchema = getIDRouteSchema.response
 
-				expect(() =>
-					videoDeleteRouteRequestPathParamsSchema.parse(
-						data
-					)
-				).toThrow()
-			})
-
-			it("should throw if the data is lacking mandatory fields", () => {
-				expect(() =>
-					videoDeleteRouteRequestPathParamsSchema.parse({
-						a: 1
-					})
-				).toThrow()
-			})
-		})
-
-		describe("videoUploadRouteRequestQueryParamsSchema", () => {
-			it("should parse the data correctly and not throw", () => {
-				const data: VideoUploadRouteRequestSchema = {
-					reference_video_id: 1
-				}
-
-				expect(
-					videoUploadRouteRequestQueryParamsSchema.parse(
-						data
-					)
-				).toStrictEqual(data)
-			})
-
-			it("should throw if the data is lacking mandatory fields", () => {
-				expect(() =>
-					videoUploadRouteRequestQueryParamsSchema.parse({
-						a: 1
-					})
-				).toThrow()
-			})
-		})
-	})
-
-	describe("Responses", () => {
-		describe("videosMainRouteResponseSchema", () => {
-			it("should parse the data correctly and not throw", () => {
-				const data1: VideosMainRouteResponseSchema = {
-					ok: true,
-					data: [
-						{
+				it("should parse the data correctly and not throw", () => {
+					const data1 = {
+						ok: true,
+						data: {
 							id: 1,
 							name: "Hello",
-							reference_video_id: 0,
+							reference_video_id: 1,
 							url: "http://github.com",
 							createdAt: "2024-07-24T10:49:01.854Z",
 							updatedAt: "2024-07-24T10:49:01.854Z"
 						}
-					]
-				}
+					}
 
-				const data2: VideosMainRouteResponseSchema = {
-					ok: false,
-					error:
-						"There was an error while processing your request"
-				}
+					const data2 = {
+						ok: false,
+						error: "Hy"
+					}
 
-				expect(
-					videosMainRouteResponseSchema.parse(data1)
-				).toStrictEqual(data1)
-				expect(
-					videosMainRouteResponseSchema.parse(data2)
-				).toStrictEqual(data2)
+					expect(responseSchema.parse(data1)).toStrictEqual(
+						data1
+					)
+					expect(responseSchema.parse(data2)).toStrictEqual(
+						data2
+					)
+				})
+
+				it("should throw if the data is lacking mandatory fields", () => {
+					expect(() =>
+						responseSchema.parse({
+							badReq: ""
+						})
+					).toThrow()
+				})
+
+				it("should throw if the data contains mandatory fields but has an extra property", () => {
+					expect(() =>
+						responseSchema.parse({
+							ok: true,
+							data: {
+								id: 1,
+								name: "Hello",
+								reference_video_id: 1,
+								url: "http://github.com",
+								createdAt: "2024-07-24T10:49:01.854Z",
+								updatedAt: "2024-07-24T10:49:01.854Z",
+								a: 1
+							}
+						})
+					).toThrow()
+				})
 			})
+		})
 
-			it("should throw if the data is lacking mandatory fields", () => {
-				expect(() =>
-					videosMainRouteResponseSchema.parse({ a: 1 })
-				).toThrow()
-			})
+		describe("/delete/:id", () => {
+			const deleteIDRouteSchema =
+				routesSchemas["/delete/:id"]
 
-			it("should throw if the data contains mandatory fields but has an extra property", () => {
-				const data1 = {
-					ok: true,
-					data: [
-						{
-							id: 1,
-							name: "Hello",
-							reference_video_id: 0,
-							url: "http://github.com",
-							createdAt: "2024-07-24T10:49:01.854Z",
-							updatedAt: "2024-07-24T10:49:01.854Z",
+			describe("pathParams", () => {
+				const pathParamsSchema =
+					deleteIDRouteSchema.pathParams
+
+				it("should parse the data correctly and not throw", () => {
+					const data = {
+						id: 1
+					}
+
+					expect(
+						pathParamsSchema.parse(data)
+					).toStrictEqual(data)
+				})
+
+				it("should throw if the shape is correct but the data shape is not", () => {
+					const data = {
+						id: {}
+					}
+
+					expect(() =>
+						pathParamsSchema.parse(data)
+					).toThrow()
+				})
+
+				it("should throw if the data is lacking mandatory fields", () => {
+					expect(() =>
+						pathParamsSchema.parse({
 							a: 1
-						}
-					]
-				}
-
-				const data2 = {
-					ok: false,
-					error:
-						"There was an error while processing your request",
-					a: 1
-				}
-
-				expect(() =>
-					videosMainRouteResponseSchema.parse(data1)
-				).toThrow()
-				expect(() =>
-					videosMainRouteResponseSchema.parse(data2)
-				).toThrow()
-			})
-		})
-
-		describe("videoUploadRouteResponseSchema", () => {
-			it("should parse the data correctly and not throw", () => {
-				const data1: VideoUploadRouteResponseSchema = {
-					ok: true,
-					data: {
-						db: {
-							id: 29,
-							name: "1721821659094_-_video.t3071019.video",
-							reference_video_id: 2,
-							createdAt: "2024-07-24T11:47:39.097Z",
-							updatedAt: "2024-07-24T11:47:39.097Z",
-							url: "http://127.0.0.1:8080/files/videos/1721821659094_-_video.t3071019.video"
-						},
-						originalFileData: {
-							fieldname: "video",
-							originalname: "video.t3071019.video",
-							encoding: "7bit",
-							mimetype: "application/x-bitvideo",
-							destination: "./files/videos",
-							filename:
-								"1721821659094_-_video.t3071019.video",
-							path: "files\\videos\\1721821659094_-_video.t3071019.video",
-							size: 166164
-						}
-					}
-				}
-
-				const data2: VideosMainRouteResponseSchema = {
-					ok: false,
-					error:
-						"There was an error while processing your request"
-				}
-
-				expect(
-					videoUploadRouteResponseSchema.parse(data1)
-				).toStrictEqual(data1)
-				expect(
-					videoUploadRouteResponseSchema.parse(data2)
-				).toStrictEqual(data2)
+						})
+					).toThrow()
+				})
 			})
 
-			it("should throw if the data is lacking mandatory fields", () => {
-				expect(() =>
-					videoUploadRouteResponseSchema.parse({ a: 1 })
-				).toThrow()
-			})
+			describe("response", () => {
+				const responseSchema = deleteIDRouteSchema.response
 
-			it("should throw if the data contains mandatory fields but has an extra property", () => {
-				const data1 = {
-					ok: true,
-					data: {
-						db: {
-							id: 29,
-							name: "1721821659094_-_video.t3071019.video",
-							reference_video_id: 2,
-							createdAt: "2024-07-24T11:47:39.097Z",
-							updatedAt: "2024-07-24T11:47:39.097Z",
-							url: "http://127.0.0.1:8080/files/videos/1721821659094_-_video.t3071019.video",
-							a: ""
-						},
-						originalFileData: {
-							fieldname: "video",
-							originalname: "video.t3071019.video",
-							encoding: "7bit",
-							mimetype: "application/x-bitvideo",
-							destination: "./files/videos",
-							filename:
-								"1721821659094_-_video.t3071019.video",
-							path: "files\\videos\\1721821659094_-_video.t3071019.video",
-							size: 166164
-						}
-					}
-				}
-
-				const data2 = {
-					ok: true,
-					data: {
-						db: {
-							id: 29,
-							name: "1721821659094_-_video.t3071019.video",
-							reference_video_id: 2,
-							createdAt: "2024-07-24T11:47:39.097Z",
-							updatedAt: "2024-07-24T11:47:39.097Z",
-							url: "http://127.0.0.1:8080/files/videos/1721821659094_-_video.t3071019.video"
-						},
-						originalFileData: {
-							fieldname: "video",
-							originalname: "video.t3071019.video",
-							encoding: "7bit",
-							mimetype: "application/x-bitvideo",
-							destination: "./files/videos",
-							filename:
-								"1721821659094_-_video.t3071019.video",
-							path: "files\\videos\\1721821659094_-_video.t3071019.video",
-							size: 166164,
-							a: ""
-						}
-					}
-				}
-
-				const data3 = {
-					ok: false,
-					error:
-						"There was an error while processing your request",
-					a: 1
-				}
-
-				expect(() =>
-					videoUploadRouteResponseSchema.parse(data1)
-				).toThrow()
-				expect(() =>
-					videoUploadRouteResponseSchema.parse(data2)
-				).toThrow()
-				expect(() =>
-					videoUploadRouteResponseSchema.parse(data3)
-				).toThrow()
-			})
-		})
-
-		describe("videoGetRouteResponseSchema", () => {
-			it("should parse the data correctly and not throw", () => {
-				const data1: VideoGetRouteResponseSchema = {
-					ok: true,
-					data: {
-						id: 1,
-						name: "Hello",
-						reference_video_id: 1,
-						url: "http://github.com",
-						createdAt: "2024-07-24T10:49:01.854Z",
-						updatedAt: "2024-07-24T10:49:01.854Z"
-					}
-				}
-
-				const data2: VideoGetRouteResponseSchema = {
-					ok: false,
-					error: "Hy"
-				}
-
-				expect(
-					videoGetRouteResponseSchema.parse(data1)
-				).toStrictEqual(data1)
-				expect(
-					videoGetRouteResponseSchema.parse(data2)
-				).toStrictEqual(data2)
-			})
-
-			it("should throw if the data is lacking mandatory fields", () => {
-				expect(() =>
-					videoGetRouteResponseSchema.parse({ badReq: "" })
-				).toThrow()
-			})
-
-			it("should throw if the data contains mandatory fields but has an extra property", () => {
-				expect(() =>
-					videoGetRouteResponseSchema.parse({
+				it("should parse the data correctly and not throw", () => {
+					const data1 = {
 						ok: true,
 						data: {
 							id: 1,
@@ -426,64 +451,47 @@ describe("videos", () => {
 							reference_video_id: 1,
 							url: "http://github.com",
 							createdAt: "2024-07-24T10:49:01.854Z",
-							updatedAt: "2024-07-24T10:49:01.854Z",
-							a: 1
+							updatedAt: "2024-07-24T10:49:01.854Z"
 						}
-					})
-				).toThrow()
-			})
-		})
-
-		describe("videoDeleteRouteResponseSchema", () => {
-			it("should parse the data correctly and not throw", () => {
-				const data1: VideoDeleteRouteResponseSchema = {
-					ok: true,
-					data: {
-						id: 1,
-						name: "Hello",
-						reference_video_id: 1,
-						url: "http://github.com",
-						createdAt: "2024-07-24T10:49:01.854Z",
-						updatedAt: "2024-07-24T10:49:01.854Z"
 					}
-				}
 
-				const data2: VideoDeleteRouteResponseSchema = {
-					ok: false,
-					error: "Hy"
-				}
+					const data2 = {
+						ok: false,
+						error: "Hy"
+					}
 
-				expect(
-					videoDeleteRouteResponseSchema.parse(data1)
-				).toStrictEqual(data1)
-				expect(
-					videoDeleteRouteResponseSchema.parse(data2)
-				).toStrictEqual(data2)
-			})
+					expect(responseSchema.parse(data1)).toStrictEqual(
+						data1
+					)
+					expect(responseSchema.parse(data2)).toStrictEqual(
+						data2
+					)
+				})
 
-			it("should throw if the data is lacking mandatory fields", () => {
-				expect(() =>
-					videoDeleteRouteResponseSchema.parse({
-						badReq: ""
-					})
-				).toThrow()
-			})
+				it("should throw if the data is lacking mandatory fields", () => {
+					expect(() =>
+						responseSchema.parse({
+							badReq: ""
+						})
+					).toThrow()
+				})
 
-			it("should throw if the data contains mandatory fields but has an extra property", () => {
-				expect(() =>
-					videoDeleteRouteResponseSchema.parse({
-						ok: true,
-						data: {
-							id: 1,
-							name: "Hello",
-							reference_video_id: 1,
-							url: "http://github.com",
-							createdAt: "2024-07-24T10:49:01.854Z",
-							updatedAt: "2024-07-24T10:49:01.854Z",
-							a: 1
-						}
-					})
-				).toThrow()
+				it("should throw if the data contains mandatory fields but has an extra property", () => {
+					expect(() =>
+						responseSchema.parse({
+							ok: true,
+							data: {
+								id: 1,
+								name: "Hello",
+								reference_video_id: 1,
+								url: "http://github.com",
+								createdAt: "2024-07-24T10:49:01.854Z",
+								updatedAt: "2024-07-24T10:49:01.854Z",
+								a: 1
+							}
+						})
+					).toThrow()
+				})
 			})
 		})
 	})
