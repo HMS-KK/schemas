@@ -2,6 +2,8 @@ import { z } from "zod"
 import { apiResponseSchema } from "./shared/responses.js"
 import { originalFileDataSchema } from "./shared/originalFileData.js"
 
+const _numIDSchema = z.coerce.number().min(1)
+
 export const uploadSchema = z
 	.object({
 		id: z.number().min(1),
@@ -36,7 +38,7 @@ export const routesSchemas = {
 	"/delete/:id": {
 		request: {
 			pathParams: z.object({
-				id: z.coerce.number().min(1)
+				id: _numIDSchema
 			})
 		},
 		response: apiResponseSchema(
@@ -47,7 +49,7 @@ export const routesSchemas = {
 		response: undefined,
 		request: {
 			pathParams: z.object({
-				id: z.coerce.number().min(1)
+				id: _numIDSchema
 			})
 		}
 	},
@@ -55,7 +57,7 @@ export const routesSchemas = {
 		response: apiResponseSchema(uploadSchema),
 		request: {
 			pathParams: z.object({
-				id: z.coerce.number().min(1)
+				id: _numIDSchema
 			})
 		}
 	}
