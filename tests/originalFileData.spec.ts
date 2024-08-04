@@ -7,13 +7,9 @@ import {
 describe("originalFileData", () => {
 	it("should parse the data correctly and not throw", () => {
 		const expected: OriginalFileDataSchema = {
-			fieldname: "torrent",
-			originalname: "torrent.t3071019.torrent",
-			encoding: "7bit",
 			mimetype: "application/x-bittorrent",
-			destination: "./files/torrents",
+			destination: "./files",
 			filename: "1721821659094_-_torrent.t3071019.torrent",
-			path: "files\\torrents\\1721821659094_-_torrent.t3071019.torrent",
 			size: 166164
 		}
 
@@ -31,14 +27,10 @@ describe("originalFileData", () => {
 	it("should throw if the data contains mandatory fields but has an extra property", () => {
 		expect(() =>
 			originalFileDataSchema.parse({
-				fieldname: "torrent",
-				originalname: "torrent.t3071019.torrent",
-				encoding: "7bit",
 				mimetype: "application/x-bittorrent",
-				destination: "./files/torrents",
+				destination: "./files",
 				filename:
 					"1721821659094_-_torrent.t3071019.torrent",
-				path: "files\\torrents\\1721821659094_-_torrent.t3071019.torrent",
 				size: 166164,
 				a: 1
 			})
