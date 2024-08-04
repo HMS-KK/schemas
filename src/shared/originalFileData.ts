@@ -5,14 +5,10 @@ import { z } from "zod"
  */
 export const originalFileDataSchema = z
 	.object({
-		fieldname: z.string(),
-		originalname: z.string(),
-		encoding: z.string(),
-		mimetype: z.string(),
-		destination: z.string(),
-		filename: z.string(),
-		path: z.string(),
-		size: z.number()
+		filename: z.string().min(1),
+		mimetype: z.string().min(1),
+		size: z.number().min(0),
+		destination: z.string().min(1)
 	})
 	.strict()
 
